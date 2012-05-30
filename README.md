@@ -17,7 +17,7 @@ PgCsv.new(opts).export(to, opts)
 
 Options:
 ``` ruby
-  :sql        => "select u.*, p.* from users u, projects p where p.user_id = u.id order by email limit 100"
+  :sql        => "select p.* from users u, projects p where p.user_id = u.id order by email limit 10"
   :connection => AR.connection
   :delimiter  => ["\t", ",", ]
   :header     => boolean, use pg header for fields?
@@ -25,7 +25,7 @@ Options:
   :columns    => manual array of column names, ignore :header option
 
   :temp_file  => boolean, generate throught temp file, final file appears by mv
-  :temp_dir   => for :temp_file, ex: /tmp
+  :temp_dir   => for :temp_file, ex: '/tmp'
 
   :type       => :plain - return full string
               => :gzip  - save file to gzip
