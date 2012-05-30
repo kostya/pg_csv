@@ -39,11 +39,13 @@ Examples:
   PgCsv.new(:sql => sql).export('a2.gz', :type => :gzip)
   PgCsv.new(:sql => sql).export('a3.csv', :temp_file => true)
   PgCsv.new(:sql => sql).export(nil, :type => :plain)
-  File.open("a4.csv", 'a'){|f| FastPgCsv.new(:sql => "select * from users").export(f, :type => :stream) }
+  File.open("a4.csv", 'a'){|f| FastPgCsv.new(:sql => "select * from users").\
+      export(f, :type => :stream) }
   PgCsv.new(:sql => sql).export('a5.csv', :delimiter => "\t")
   PgCsv.new(:sql => sql).export('a6.csv', :header => true)
   PgCsv.new(:sql => sql).export('a7.csv', :columns => %w{id a b c})
-  PgCsv.new(:sql => sql, :connection => SomeDb.connection, :columns => %w{id a b c}, :delimiter => "|").export('a8.gz', :type => :gzip, :temp_file => true)
+  PgCsv.new(:sql => sql, :connection => SomeDb.connection, :columns => %w{id a b c}, :delimiter => "|").\
+      export('a8.gz', :type => :gzip, :temp_file => true)
 
   # example collect from shards
   Zlib::GzipWriter.open('some.gz') do |stream|
