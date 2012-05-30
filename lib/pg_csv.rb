@@ -43,7 +43,7 @@ protected
       tempfile = Tempfile.new("pg_csv", tmp_dir || '/tmp')
       yield(tempfile.path)
       FileUtils.mv(tempfile.path, to)
-      info "<==== moving export to #{to}"
+      info "<=== moving export to #{to}"
     else
       yield(to)
     end
@@ -53,7 +53,7 @@ protected
     exporter = method(:export_to_stream).to_proc
 
     start = Time.now
-    info "===> start generate export #{to} with #{type}"
+    info "===> start generate export #{to}, type: #{type}"
     
     result = nil
 
@@ -100,7 +100,7 @@ protected
       stream.write prepare_row(row)
     end
 
-    info "done exporting (#{count}) records."
+    info "<= done exporting (#{count}) records."
     count
   end
 
@@ -125,12 +125,12 @@ protected
 
   def query
     <<-SQL
-      COPY (
-        #{o(:sql)}
-      ) TO STDOUT
-      WITH CSV
-           DELIMITER '#{delimiter}'
-           #{use_pg_header? ? 'HEADER' : ''}
+COPY (
+  #{o(:sql)}
+) TO STDOUT
+WITH CSV
+DELIMITER '#{delimiter}'
+#{use_pg_header? ? 'HEADER' : ''}
     SQL
   end
 
