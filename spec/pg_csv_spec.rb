@@ -121,4 +121,10 @@ describe PgCsv do
     end
   end
   
+  it "integration spec" do
+    File.exists?(@gzname).should be_false
+    PgCsv.new(:sql => @sql, :type => :gzip).export(@gzname, :delimiter => "|", :columns => %w{q w e}, :temp_file => true, :temp_dir => tmp_dir)
+    with_gzfile(@gzname){|d| d.should == "q|w|e\n4|5|6\n1|2|3\n" }
+  end
+  
 end
