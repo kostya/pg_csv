@@ -26,8 +26,8 @@ class PgCsv
   def export(to, opts = {})
     @local_options = opts
     
-    raise "connection should be" unless connection
-    raise "sql should be" unless o(:sql)
+    raise ":connection should be" unless connection
+    raise ":sql should be" unless o(:sql)
 
     with_temp_file(to, o(:temp_file), o(:temp_dir)) do |_to|
       export_to(_to)
@@ -67,7 +67,7 @@ protected
         File.open(to, 'w', &exporter)
         
       when :gzip
-        check_to_str(to)        
+        check_to_str(to)
         Zlib::GzipWriter.open(to, &exporter)
         
       when :stream
@@ -87,7 +87,7 @@ protected
   end
   
   def check_to_str(to)
-    raise "to should be an string" unless to.is_a?(String)
+    raise "'to' should be an string" unless to.is_a?(String)
   end
   
   def export_to_stream(stream)

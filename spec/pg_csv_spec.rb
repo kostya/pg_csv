@@ -127,11 +127,11 @@ describe PgCsv do
       Zlib::GzipWriter.open(@name) do |gz|
         e = PgCsv.new(:sql => @sql, :type => :stream)
         
-        e.export(gz, :delimiter => "|")
+        e.export(gz, :delimiter => "|", :columns => %w{q w e} )
         e.export(gz, :delimiter => "*", :sql => @sql0)
       end
       
-      with_gzfile(@name){|d| d.should == "4|5|6\n1|2|3\n1*2*3\n4*5*6\n" }
+      with_gzfile(@name){|d| d.should == "q|w|e\n4|5|6\n1|2|3\n1*2*3\n4*5*6\n" }
     end
   end
   
