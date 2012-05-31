@@ -135,4 +135,15 @@ describe PgCsv do
     end
   end
   
+  it "custom prepare row" do
+    e = PgCsv.new(:sql => @sql)
+      
+    def e.prepare_row(row)
+      row.split(",").join("-|-")
+    end
+      
+    e.export(@name)
+    with_file(@name){|d| d.should == "4-|-5-|-6\n1-|-2-|-3\n" }
+  end
+  
 end
