@@ -25,6 +25,9 @@ class PgCsv
   # do export :to - filename or stream  
   def export(to, opts = {})
     @local_options = opts
+    
+    raise "connection should be" unless connection
+    raise "sql should be" unless o(:sql)
 
     with_temp_file(to, o(:temp_file), o(:temp_dir)) do |_to|
       export_to(_to)
@@ -106,16 +109,16 @@ protected
 
   def load_data
     info "#{query}"
-    conn = connection.raw_connection
+    raw = connection.raw_connection
     
     info "=> query"
-    q = conn.exec(query)
+    q = raw.exec(query)
     info "<= query"
 
     info "=> write data"
     yield(columns_str) if columns_str
     
-    while row = conn.get_copy_data()
+    while row = raw.get_copy_data()
       yield row
     end
     info "<= write data"

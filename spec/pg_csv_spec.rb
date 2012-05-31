@@ -8,10 +8,7 @@ describe PgCsv do
     Test.create :a => 4, :b => 5, :c => 6
     
     @name = tmp_dir + "1.csv"
-    @gzname = tmp_dir + "1.gz"
-    
     FileUtils.rm(@name) rescue nil
-    FileUtils.rm(@gzname) rescue nil
 
     @sql0 = "select a,b,c from tests order by a asc"    
     @sql = "select a,b,c from tests order by a desc"
@@ -19,9 +16,7 @@ describe PgCsv do
   
   after :each do
     FileUtils.rm(@name) rescue nil
-    FileUtils.rm(@gzname) rescue nil            
   end
-  
   
   describe "simple export" do
   
@@ -96,9 +91,9 @@ describe PgCsv do
 
   describe "different types of export" do
     it "gzip export" do
-      File.exists?(@gzname).should be_false
-      PgCsv.new(:sql => @sql, :type => :gzip).export(@gzname)
-      with_gzfile(@gzname){|d| d.should == "4,5,6\n1,2,3\n" }
+      File.exists?(@name).should be_false
+      PgCsv.new(:sql => @sql, :type => :gzip).export(@name)
+      with_gzfile(@name){|d| d.should == "4,5,6\n1,2,3\n" }
     end
     
     it "plain export" do
@@ -120,11 +115,24 @@ describe PgCsv do
       with_file(@name){|d| d.should == "4,5,6\n1,2,3\n" }            
     end
   end
-  
-  it "integration spec" do
-    File.exists?(@gzname).should be_false
-    PgCsv.new(:sql => @sql, :type => :gzip).export(@gzname, :delimiter => "|", :columns => %w{q w e}, :temp_file => true, :temp_dir => tmp_dir)
-    with_gzfile(@gzname){|d| d.should == "q|w|e\n4|5|6\n1|2|3\n" }
+
+  describe "integration specs" do
+    it "1" do
+      File.exists?(@name).should be_false
+      PgCsv.new(:sql => @sql, :type => :gzip).export(@name, :delimiter => "|", :columns => %w{q w e}, :temp_file => true, :temp_dir => tmp_dir)
+      with_gzfile(@name){|d| d.should == "q|w|e\n4|5|6\n1|2|3\n" }
+    end
+    
+    it "2" do
+      Zlib::GzipWriter.open(@name) do |gz|
+        e = PgCsv.new(:sql => @sql, :type => :stream)
+        
+        e.export(gz, :delimiter => "|")
+        e.export(gz, :delimiter => "*", :sql => @sql0)
+      end
+      
+      with_gzfile(@name){|d| d.should == "4|5|6\n1|2|3\n1*2*3\n4*5*6\n" }
+    end
   end
   
 end
