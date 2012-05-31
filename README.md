@@ -22,9 +22,9 @@ Options:
 :delimiter  => ["\t", ",", ]
 :header     => boolean, use pg header for fields?
 :logger     => logger
-:columns    => manual array of column names, ignore :header option
+:columns    => array of column names, ignore :header option
 
-:temp_file  => boolean, generate throught temp file, final file appears by mv
+:temp_file  => boolean, generate throught temp file? final file appears by mv
 :temp_dir   => for :temp_file, ex: '/tmp'
 
 :type       => :plain - return full string
