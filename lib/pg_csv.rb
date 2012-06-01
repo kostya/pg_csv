@@ -92,7 +92,7 @@ protected
   
   def export_to_stream(stream)
     write_csv(stream)
-    stream.flush
+    stream.flush if stream.respond_to?(:flush)
   end
 
   def write_csv(stream)
