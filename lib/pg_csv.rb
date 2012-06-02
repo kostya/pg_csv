@@ -129,7 +129,7 @@ protected
   def query
     <<-SQL
 COPY (
-  #{o(:sql)}
+  #{sql}
 ) TO STDOUT
 WITH CSV
 DELIMITER '#{delimiter}'
@@ -180,6 +180,10 @@ DELIMITER '#{delimiter}'
 
   def delimiter
     o(:delimiter) || ','
+  end
+  
+  def sql
+    o(:sql)
   end
   
 end
