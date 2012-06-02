@@ -11,3 +11,4 @@ test/dummy/.sass-cache
 tmp/*
 !tmp/.gitkeep
 *.gem
+todo
