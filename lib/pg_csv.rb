@@ -27,9 +27,9 @@ class PgCsv
     @local_options = opts
     
     raise ":connection should be" unless connection
-    raise ":sql should be" unless o(:sql)
+    raise ":sql should be" unless sql
 
-    with_temp_file(to, o(:temp_file), o(:temp_dir)) do |_to|
+    with_temp_file(to, temp_file, temp_dir) do |_to|
       export_to(_to)
     end        
   end
@@ -184,6 +184,14 @@ DELIMITER '#{delimiter}'
   
   def sql
     o(:sql)
+  end
+  
+  def temp_file
+    o(:temp_file)
+  end
+  
+  def temp_dir
+    o(:temp_dir) || '/tmp'
   end
   
 end
