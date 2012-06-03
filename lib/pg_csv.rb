@@ -38,7 +38,7 @@ protected
 
   def with_temp_file(to, use_temp_file, tmp_dir)
     if use_temp_file
-      check_to_str(to)
+      check_str(to)
       
       require 'fileutils'
       require 'tempfile'
@@ -62,11 +62,11 @@ protected
     case type
     
       when :file
-        check_to_str(to)
+        check_str(to)
         File.open(to, 'w', &exporter)
         
       when :gzip
-        check_to_str(to)
+        check_str(to)
         Zlib::GzipWriter.open(to, &exporter)
         
       when :stream
@@ -85,7 +85,7 @@ protected
     result
   end
   
-  def check_to_str(to)
+  def check_str(to)
     raise "'to' should be an string" unless to.is_a?(String)
   end
   
