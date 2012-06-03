@@ -43,7 +43,7 @@ protected
       require 'fileutils'
       require 'tempfile'
                     
-      tempfile = Tempfile.new("pg_csv", tmp_dir || '/tmp')
+      tempfile = Tempfile.new("pg_csv", tmp_dir)
       yield(tempfile.path)
       FileUtils.mv(tempfile.path, to)
       info "<=== moving export to #{to}"
@@ -53,8 +53,7 @@ protected
   end                                                            
 
   def export_to(to)
-    exporter = method(:export_to_stream).to_proc
-
+  
     start = Time.now
     info "===> start generate export #{to}, type: #{type}"
     
@@ -88,6 +87,10 @@ protected
   
   def check_to_str(to)
     raise "'to' should be an string" unless to.is_a?(String)
+  end
+  
+  def exporter
+    method(:export_to_stream).to_proc
   end
   
   def export_to_stream(stream)
