@@ -1,6 +1,6 @@
 require 'fileutils'
 
-conn = {'adapter' => 'postgresql', 'database' => 'pgcsv_test', 'encoding' => 'utf8', 'username' => 'kostya', 'password' => 'password'}
+conn = {'adapter' => 'postgresql', 'database' => 'pgcsv_test'}
 ActiveRecord::Base.establish_connection conn
 
 class Test < ActiveRecord::Base
