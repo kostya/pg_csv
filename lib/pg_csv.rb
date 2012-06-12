@@ -7,7 +7,7 @@ class PgCsv
   end
   
   # do export :to - filename or stream  
-  def export(to, opts = {}, &block)
+  def export(to = nil, opts = {}, &block)
     @block = block
     @local_options = opts.symbolize_keys
     
@@ -55,6 +55,7 @@ protected
         Zlib::GzipWriter.open(to, &exporter)
         
       when :stream
+        raise "'to' should be" unless to
         exporter[to]
         
       when :plain
