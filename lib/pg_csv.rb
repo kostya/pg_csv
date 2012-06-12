@@ -2,22 +2,6 @@ require 'active_record'
 
 class PgCsv
 
-  # opts:
-  #   :sql        => "select u.*, p.* from users u, projects p where p.user_id = u.id order by email limit 100"
-  #   :connection => AR.connection
-  #   :delimiter  => ["\t", ",", ]
-  #   :header     => boolean, use pg header for fields?
-  #   :logger     => logger
-  #   :columns    => manual array of column names, ignore :header option
-
-  #   :temp_file  => boolean, generating throught temp file, final file appears by mv
-  #   :temp_dir   => path, ex: /tmp
-  
-  #   :type       => :plain - return full string
-  #               => :gzip  - save file to gzip
-  #               => :stream - save to stream
-  #               => :file - just save to file * default
-  
   def initialize(opts = {})
     @options = opts.symbolize_keys
   end
@@ -38,7 +22,7 @@ class PgCsv
 protected
 
   def with_temp_file(to, use_temp_file, tmp_dir)
-    if use_temp_file
+    if use_temp_file && [:file, :gzip].include?(type)
       check_str(to)
       
       require 'fileutils'
