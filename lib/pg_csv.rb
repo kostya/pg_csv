@@ -82,7 +82,7 @@ protected
       when :yield
         # not real saving anywhere, just yield each record
         raise "block should be" unless @block
-        extract_rows do |row|
+        load_data do |row|
           @block.call(row)
         end                
     end
@@ -108,18 +108,9 @@ protected
   end
 
   def write_csv(stream)
-    extract_rows do |row|
+    load_data do |row|
       stream.write(row)
     end
-  end
-  
-  def extract_rows
-    count = 0
-    load_data do |row|
-      yield prepare_row(row)
-      count += 1
-    end      
-    count                  
   end
   
   def load_data
@@ -131,14 +122,17 @@ protected
     info "<= query"
 
     info "=> write data"
-    yield(columns_str) if columns_str
-    
+    yield(prepare_row(columns_str)) if columns_str
+
+    count = 0    
     while row = raw.get_copy_data()
-      yield row
+      yield prepare_row(row)
+      count += 1
     end
     info "<= write data"
 
     q.clear
+    count
   end
 
   def query
