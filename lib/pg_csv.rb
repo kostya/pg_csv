@@ -23,7 +23,8 @@ class PgCsv
   end
   
   # do export :to - filename or stream  
-  def export(to, opts = {})
+  def export(to, opts = {}, &block)
+    @block = block
     @local_options = opts.symbolize_keys
     
     raise ":connection should be" unless connection
@@ -78,6 +79,12 @@ protected
         exporter[sio]
         result = sio.string
         
+      when :yield
+        # not real saving anywhere, just yield each record
+        raise "block should be" unless @block
+        extract_rows do |row|
+          @block.call(row)
+        end                
     end
     
     info "<=== finished write #{to} in #{Time.now - start}"
@@ -94,22 +101,27 @@ protected
   end
   
   def export_to_stream(stream)
-    write_csv(stream)
+    count = write_csv(stream)
     stream.flush if stream.respond_to?(:flush)
+    
+    info "<= done exporting (#{count}) records."
   end
 
   def write_csv(stream)
-    count = 0
-    
-    load_data do |row|
-      count += 1
-      stream.write prepare_row(row)
+    extract_rows do |row|
+      stream.write(row)
     end
-
-    info "<= done exporting (#{count}) records."
-    count
   end
-
+  
+  def extract_rows
+    count = 0
+    load_data do |row|
+      yield prepare_row(row)
+      count += 1
+    end      
+    count                  
+  end
+  
   def load_data
     info "#{query}"
     raw = connection.raw_connection

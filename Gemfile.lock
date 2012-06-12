@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pg_csv (0.1.1)
+    pg_csv (0.1.2)
       activerecord
       pg
 
