@@ -31,6 +31,7 @@ Options:
             => :gzip  - save file to gzip
             => :stream - save to stream
             => :file - just save to file = default
+            => :yield - return each row to block
 ```
 
 Examples:
@@ -53,5 +54,10 @@ Zlib::GzipWriter.open('some.gz') do |stream|
   ConnectionPool.each_shard do |connection|
     e.export(stream, :connection => connection)
   end
+end
+
+# yield example
+PgCsv.new(:sql => sql, :type => :yield).export(nil) do |row|
+  puts row  
 end
 ```
