@@ -67,7 +67,7 @@ protected
       when :yield
         # not real saving anywhere, just yield each record
         raise "block should be" unless @block
-        load_data do |row|
+        result = load_data do |row|
           @block.call(row)
         end                
     end

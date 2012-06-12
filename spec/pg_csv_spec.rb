@@ -119,7 +119,7 @@ describe PgCsv do
       rows = []
       PgCsv.new(:sql => @sql, :type => :yield).export(nil) do |row|
         rows << row
-      end
+      end.should == 2
       
       rows.should == ["4,5,6\n", "1,2,3\n"]
     end
