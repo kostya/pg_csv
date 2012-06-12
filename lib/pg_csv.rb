@@ -19,12 +19,12 @@ class PgCsv
   #               => :file - just save to file * default
   
   def initialize(opts = {})
-    @options = opts
+    @options = opts.symbolize_keys
   end
   
   # do export :to - filename or stream  
   def export(to, opts = {})
-    @local_options = opts
+    @local_options = opts.symbolize_keys
     
     raise ":connection should be" unless connection
     raise ":sql should be" unless sql
