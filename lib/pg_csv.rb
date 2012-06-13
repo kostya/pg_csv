@@ -14,23 +14,31 @@ class PgCsv
     raise ":connection should be" unless connection
     raise ":sql should be" unless sql
 
-    with_temp_file(to, temp_file, temp_dir) do |_to|
+    with_temp_file?(to, temp_file, temp_dir) do |_to|
       export_to(_to)
     end        
   end
   
 protected
 
-  def with_temp_file(to, use_temp_file, tmp_dir)
+  def self.with_temp_file(dest, tmp_dir = '/tmp', &block)
+    require 'fileutils'
+    require 'tempfile'
+                                  
+    tempfile = Tempfile.new("pg_csv", tmp_dir)
+    yield(tempfile.path)
+        
+    FileUtils.mv(tempfile.path, dest)
+  end
+
+  def with_temp_file?(to, use_temp_file, tmp_dir)
     if use_temp_file && [:file, :gzip].include?(type)
       check_str(to)
+
+      PgCsv.with_temp_file(to, tmp_dir) do |filename|
+        yield(filename)
+      end
       
-      require 'fileutils'
-      require 'tempfile'
-                    
-      tempfile = Tempfile.new("pg_csv", tmp_dir)
-      yield(tempfile.path)
-      FileUtils.mv(tempfile.path, to)
       info "<=== moving export to #{to}"
     else
       yield(to)
