@@ -114,6 +114,15 @@ describe PgCsv do
       PgCsv.new(:sql => @sql, :type => :file).export(@name)
       with_file(@name){|d| d.should == "4,5,6\n1,2,3\n" }            
     end
+    
+    it "yield export" do
+      rows = []
+      PgCsv.new(:sql => @sql, :type => :yield).export do |row|
+        rows << row
+      end.should == 2
+      
+      rows.should == ["4,5,6\n", "1,2,3\n"]
+    end
   end
 
   describe "integration specs" do
@@ -138,11 +147,10 @@ describe PgCsv do
   it "custom prepare row" do
     e = PgCsv.new(:sql => @sql)
       
-    def e.prepare_row(row)
+    e.export(@name) do |row|
       row.split(",").join("-|-")
     end
-      
-    e.export(@name)
+    
     with_file(@name){|d| d.should == "4-|-5-|-6\n1-|-2-|-3\n" }
   end
   

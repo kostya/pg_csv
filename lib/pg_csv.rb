@@ -2,28 +2,13 @@ require 'active_record'
 
 class PgCsv
 
-  # opts:
-  #   :sql        => "select u.*, p.* from users u, projects p where p.user_id = u.id order by email limit 100"
-  #   :connection => AR.connection
-  #   :delimiter  => ["\t", ",", ]
-  #   :header     => boolean, use pg header for fields?
-  #   :logger     => logger
-  #   :columns    => manual array of column names, ignore :header option
-
-  #   :temp_file  => boolean, generating throught temp file, final file appears by mv
-  #   :temp_dir   => path, ex: /tmp
-  
-  #   :type       => :plain - return full string
-  #               => :gzip  - save file to gzip
-  #               => :stream - save to stream
-  #               => :file - just save to file * default
-  
   def initialize(opts = {})
     @options = opts.symbolize_keys
   end
   
   # do export :to - filename or stream  
-  def export(to, opts = {})
+  def export(to = nil, opts = {}, &block)
+    @block = block || Proc.new{|x|x}
     @local_options = opts.symbolize_keys
     
     raise ":connection should be" unless connection
@@ -37,7 +22,7 @@ class PgCsv
 protected
 
   def with_temp_file(to, use_temp_file, tmp_dir)
-    if use_temp_file
+    if use_temp_file && [:file, :gzip].include?(type)
       check_str(to)
       
       require 'fileutils'
@@ -70,6 +55,7 @@ protected
         Zlib::GzipWriter.open(to, &exporter)
         
       when :stream
+        raise "'to' should be" unless to
         exporter[to]
         
       when :plain
@@ -78,6 +64,10 @@ protected
         exporter[sio]
         result = sio.string
         
+      when :yield
+        # not real saving anywhere, just yield each record
+        raise "block should be" unless @block
+        result = load_data{|_|}
     end
     
     info "<=== finished write #{to} in #{Time.now - start}"
@@ -94,22 +84,18 @@ protected
   end
   
   def export_to_stream(stream)
-    write_csv(stream)
+    count = write_csv(stream)
     stream.flush if stream.respond_to?(:flush)
+    
+    info "<= done exporting (#{count}) records."
   end
 
   def write_csv(stream)
-    count = 0
-    
     load_data do |row|
-      count += 1
-      stream.write prepare_row(row)
+      stream.write(row)
     end
-
-    info "<= done exporting (#{count}) records."
-    count
   end
-
+  
   def load_data
     info "#{query}"
     raw = connection.raw_connection
@@ -119,14 +105,17 @@ protected
     info "<= query"
 
     info "=> write data"
-    yield(columns_str) if columns_str
-    
+    yield(@block[columns_str]) if columns_str
+
+    count = 0    
     while row = raw.get_copy_data()
-      yield row
+      yield(@block[row])
+      count += 1
     end
     info "<= write data"
 
     q.clear
+    count
   end
 
   def query
@@ -140,10 +129,6 @@ DELIMITER '#{delimiter}'
     SQL
   end
 
-  def prepare_row(row)
-    row
-  end
-  
   def info(message)
     logger.info(message) if logger
   end

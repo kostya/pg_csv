@@ -31,6 +31,7 @@ Options:
             => :gzip  - save file to gzip
             => :stream - save to stream
             => :file - just save to file = default
+            => :yield - return each row to block
 ```
 
 Examples:
@@ -38,7 +39,7 @@ Examples:
 PgCsv.new(:sql => User.good.to_sql).export('a1.csv')
 PgCsv.new(:sql => sql).export('a2.gz', :type => :gzip)
 PgCsv.new(:sql => sql).export('a3.csv', :temp_file => true)
-PgCsv.new(:sql => sql).export(nil, :type => :plain)
+PgCsv.new(:sql => sql, :type => :plain).export
 File.open("a4.csv", 'a'){|f| FastPgCsv.new(:sql => "select * from users").\
     export(f, :type => :stream) }
 PgCsv.new(:sql => sql).export('a5.csv', :delimiter => "\t")
@@ -53,5 +54,10 @@ Zlib::GzipWriter.open('some.gz') do |stream|
   ConnectionPool.each_shard do |connection|
     e.export(stream, :connection => connection)
   end
+end
+
+# yield example
+PgCsv.new(:sql => sql, :type => :yield).export do |row|
+  puts row  
 end
 ```
