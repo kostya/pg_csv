@@ -22,13 +22,13 @@ class PgCsv
     c = 0
     n.times do
       c += 1
-      yield(prepare_row("#{c},#{c*2},#{c * 249},#{rand(100)},#{rand(n)},blablabla,hahah,ahah,ahaha,ahahah,ah,1.55234143\n"))
+      yield(@block["#{c},#{c*2},#{c * 249},#{rand(100)},#{rand(n)},blablabla,hahah,ahah,ahaha,ahahah,ah,1.55234143\n"])
     end
   end
 end
 
 filename = "./blah.test.file"
-N = 100000
+N = 500_000
 
 tm = Benchmark.realtime{ PgCsv.new(:times => N, :type => :file).export(filename) }
 puts "export file #{tm}"

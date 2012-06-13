@@ -8,7 +8,7 @@ class PgCsv
   
   # do export :to - filename or stream  
   def export(to = nil, opts = {}, &block)
-    @block = block
+    @block = block || Proc.new{|x|x}
     @local_options = opts.symbolize_keys
     
     raise ":connection should be" unless connection
@@ -67,9 +67,7 @@ protected
       when :yield
         # not real saving anywhere, just yield each record
         raise "block should be" unless @block
-        result = load_data do |row|
-          @block.call(row)
-        end                
+        result = load_data{|_|}
     end
     
     info "<=== finished write #{to} in #{Time.now - start}"
@@ -107,11 +105,11 @@ protected
     info "<= query"
 
     info "=> write data"
-    yield(prepare_row(columns_str)) if columns_str
+    yield(@block[columns_str]) if columns_str
 
     count = 0    
     while row = raw.get_copy_data()
-      yield prepare_row(row)
+      yield(@block[row])
       count += 1
     end
     info "<= write data"
@@ -131,10 +129,6 @@ DELIMITER '#{delimiter}'
     SQL
   end
 
-  def prepare_row(row)
-    row
-  end
-  
   def info(message)
     logger.info(message) if logger
   end
