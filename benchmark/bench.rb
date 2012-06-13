@@ -20,9 +20,16 @@ class PgCsv
   def load_data
     n = o(:times).to_i
     c = 0
-    n.times do
-      c += 1
-      yield(@block["#{c},#{c*2},#{c * 249},#{rand(100)},#{rand(n)},blablabla,hahah,ahah,ahaha,ahahah,ah,1.55234143\n"])
+    if @row_proc
+      n.times do
+        c += 1
+        yield(@row_proc["#{c},#{c*2},#{c * 249},#{rand(100)},#{rand(n)},blablabla,hahah,ahah,ahaha,ahahah,ah,1.55234143\n"])
+      end
+    else
+      n.times do
+        c += 1
+        yield("#{c},#{c*2},#{c * 249},#{rand(100)},#{rand(n)},blablabla,hahah,ahah,ahaha,ahahah,ah,1.55234143\n")
+      end
     end
   end
 end
