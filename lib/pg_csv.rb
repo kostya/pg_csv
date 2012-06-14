@@ -14,8 +14,8 @@ class PgCsv
     raise ":connection should be" unless connection
     raise ":sql should be" unless sql
 
-    with_temp_file?(to, temp_file, temp_dir) do |_to|
-      export_to(_to)
+    with_temp_file?(to, temp_file, temp_dir) do |dest|
+      export_to(dest)
     end        
   end
   
@@ -35,7 +35,7 @@ protected
     if use_temp_file && [:file, :gzip].include?(type)
       check_str(to)
 
-      PgCsv.with_temp_file(to, tmp_dir) do |filename|
+      self.class.with_temp_file(to, tmp_dir) do |filename|
         yield(filename)
       end
       
