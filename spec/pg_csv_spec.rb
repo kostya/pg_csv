@@ -97,7 +97,7 @@ describe PgCsv do
     end
     
     it "plain export" do
-      PgCsv.new(:sql => @sql, :type => :plain).export(nil).should == "4,5,6\n1,2,3\n"
+      PgCsv.new(:sql => @sql, :type => :plain).export.should == "4,5,6\n1,2,3\n"
     end
     
     it "custom stream" do
@@ -144,7 +144,7 @@ describe PgCsv do
     end
   end
   
-  it "custom prepare row" do
+  it "custom row proc" do
     e = PgCsv.new(:sql => @sql)
       
     e.export(@name) do |row|
