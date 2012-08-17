@@ -12,3 +12,4 @@ tmp/*
 !tmp/.gitkeep
 *.gem
 todo
+Gemfile.lock
