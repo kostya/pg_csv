@@ -156,7 +156,7 @@ describe PgCsv do
     it "gzip with empty content" do
       File.exists?(@name).should be_false
       PgCsv.new(:sql => "select a,b,c from tests where a = -1", :type => :gzip).export(@name, :temp_file => true, :temp_dir => tmp_dir)
-      with_gzfile(@name){|d| p d; d.should == "" }
+      with_gzfile(@name){|d| d.should == "" }
     end
   end
   
