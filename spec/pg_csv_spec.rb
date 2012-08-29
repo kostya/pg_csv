@@ -152,6 +152,12 @@ describe PgCsv do
       
       with_gzfile(@name){|d| d.should == "q|w|e\n4|5|6\n1|2|3\n1*2*3\n4*5*6\n" }
     end
+
+    it "gzip with empty content" do
+      File.exists?(@name).should be_false
+      PgCsv.new(:sql => "select a,b,c from tests where a = -1", :type => :gzip).export(@name, :temp_file => true, :temp_dir => tmp_dir)
+      with_gzfile(@name){|d| p d; d.should == "\n" }
+    end
   end
   
   it "custom row proc" do
