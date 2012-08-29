@@ -85,7 +85,7 @@ class PgCsv
     
     def export_to_stream(stream)
       count = write_csv(stream)
-      stream.flush if stream.respond_to?(:flush)
+      stream.flush if stream.respond_to?(:flush) && count > 0
       
       info "<= done exporting (#{count}) records."
     end
