@@ -196,12 +196,11 @@ class PgCsv
 
   def self.with_temp_file(dest, tmp_dir = '/tmp', &block)
     require 'fileutils'
-    require 'tempfile'
-                                  
-    tempfile = Tempfile.new("pg_csv", tmp_dir)
-    yield(tempfile.path)
-        
-    FileUtils.mv(tempfile.path, dest)
+
+    filename = File.join(tmp_dir, "pg_csv_#{Time.now.to_f}_#{rand(1000000)}")
+    block[filename]
+
+    FileUtils.mv(filename, dest)
   end
 
 end
