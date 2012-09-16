@@ -12,7 +12,7 @@ class PgCsv
     def export(to = nil, opts = {}, &row_proc)
       @row_proc = row_proc
       @local_options = opts.symbolize_keys
-      
+
       raise ":connection should be" unless connection
       raise ":sql should be" unless sql
 
@@ -43,6 +43,7 @@ class PgCsv
       info "===> start generate export #{to}, type: #{type}"
       
       result = nil
+      exporter = method(:export_to_stream).to_proc
 
       case type
       
@@ -77,10 +78,6 @@ class PgCsv
     
     def check_str(to)
       raise "'to' should be an string" unless to.is_a?(String)
-    end
-    
-    def exporter
-      method(:export_to_stream).to_proc
     end
     
     def export_to_stream(stream)
