@@ -23,7 +23,7 @@ Options:
 :header     => boolean, use pg header for fields?
 :logger     => logger
 :columns    => array of column names, ignore :header option
-:encoding   => list of encodings: http://www.postgresql.org/docs/8.4/static/multibyte.html#CHARSET-TABLE
+:encoding   => encoding (default is pg_default), list of encodings: http://www.postgresql.org/docs/8.4/static/multibyte.html#CHARSET-TABLE
 
 :temp_file  => boolean, generate throught temp file? final file appears by mv
 :temp_dir   => for :temp_file, ex: '/tmp'
