@@ -1,6 +1,6 @@
 require 'fileutils'
 
-conn = {'adapter' => 'postgresql', 'database' => 'pgcsv_test'}
+conn = {'adapter' => 'postgresql', 'database' => 'pgcsv_test', :encoding => "unicode"}
 ActiveRecord::Base.establish_connection conn
 
 class Test < ActiveRecord::Base
@@ -12,6 +12,7 @@ def pg_create_schema
     t.integer :a
     t.integer :b
     t.integer :c
+    t.string  :d
   end
 end
 

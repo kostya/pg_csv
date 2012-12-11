@@ -131,7 +131,7 @@ class PgCsv
   ) TO STDOUT
   WITH CSV
   DELIMITER '#{delimiter}'
-  #{use_pg_header? ? 'HEADER' : ''}
+  #{use_pg_header? ? 'HEADER' : ''} #{encoding ? "ENCODING '#{encoding}'" : ''}
       SQL
     end
 
@@ -186,6 +186,10 @@ class PgCsv
     
     def temp_dir
       o(:temp_dir) || '/tmp'
+    end
+    
+    def encoding
+      o(:encoding)
     end
   end
 

@@ -1,3 +1,4 @@
+# encoding: utf-8
 require File.dirname(__FILE__) + '/spec_helper'
 
 describe PgCsv do
@@ -35,6 +36,12 @@ describe PgCsv do
       with_file(@name){|d| d.should == "4|5|6\n1|2|3\n" }
     end
     
+    it "encoding" do
+      Test.create! :a => 2, :b => 3, :c => 4, :d => "абсд"
+      
+      PgCsv.new(:sql => "select d from tests where a = 2").export(@name, :encoding => "WIN1251")
+      with_file(@name){|d| d.force_encoding('cp1251').should == "абсд\n".encode('cp1251') }
+    end    
     
     describe "headers" do
       it "header" do
