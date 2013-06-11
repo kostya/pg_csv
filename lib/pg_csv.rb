@@ -53,7 +53,8 @@ class PgCsv
           
         when :gzip
           check_str(to)
-          Zlib::GzipWriter.open(to, &exporter)
+          require 'zlib'
+          ::Zlib::GzipWriter.open(to, &exporter)
           
         when :stream
           raise "'to' should be" unless to
