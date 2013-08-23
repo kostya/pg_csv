@@ -7,8 +7,8 @@ class PgCsv
     def initialize(opts = {})
       @options = opts.symbolize_keys
     end
-    
-    # do export :to - filename or stream  
+
+    # do export :to - filename or stream
     def export(to = nil, opts = {}, &row_proc)
       @row_proc = row_proc
       @local_options = opts.symbolize_keys
@@ -18,9 +18,9 @@ class PgCsv
 
       with_temp_file?(to, temp_file, temp_dir) do |dest|
         export_to(dest)
-      end        
+      end
     end
-    
+
   protected
 
     def with_temp_file?(to, use_temp_file, tmp_dir)
@@ -30,61 +30,61 @@ class PgCsv
         self.class.with_temp_file(to, tmp_dir) do |filename|
           yield(filename)
         end
-        
+
         info "<=== moving export to #{to}"
       else
         yield(to)
       end
-    end                                                            
+    end
 
     def export_to(to)
-    
+
       start = Time.now
       info "===> start generate export #{to}, type: #{type}"
-      
+
       result = nil
       exporter = method(:export_to_stream).to_proc
 
       case type
-      
+
         when :file
           check_str(to)
           File.open(to, 'w', &exporter)
-          
+
         when :gzip
           check_str(to)
           require 'zlib'
           ::Zlib::GzipWriter.open(to, &exporter)
-          
+
         when :stream
           raise "'to' should be" unless to
           exporter[to]
-          
+
         when :plain
           require 'stringio'
           sio = StringIO.new
           exporter[sio]
           result = sio.string
-          
+
         when :yield
           # not real saving anywhere, just yield each record
           raise "row_proc should be" unless @row_proc
           result = load_data{|_|}
       end
-      
+
       info "<=== finished write #{to} in #{Time.now - start}"
-      
+
       result
     end
-    
+
     def check_str(to)
       raise "'to' should be an string" unless to.is_a?(String)
     end
-    
+
     def export_to_stream(stream)
       count = write_csv(stream)
       stream.flush if stream.respond_to?(:flush) && count > 0
-      
+
       info "<= done exporting (#{count}) records."
     end
 
@@ -93,11 +93,11 @@ class PgCsv
         stream.write(row)
       end
     end
-    
+
     def load_data
       info "#{query}"
       raw = connection.raw_connection
-      
+
       info "=> query"
       q = raw.exec(query)
       info "<= query"
@@ -107,7 +107,7 @@ class PgCsv
         yield(@row_proc ? @row_proc[columns_str] : columns_str)
       end
 
-      count = 0    
+      count = 0
       if @row_proc
         while row = raw.get_copy_data()
           yield(@row_proc[row])
@@ -139,9 +139,9 @@ class PgCsv
     def info(message)
       logger.info(message) if logger
     end
-    
+
     # ==== options/defaults =============
-    
+
     def o(key)
       @local_options[key] || @options[key]
     end
@@ -149,7 +149,7 @@ class PgCsv
     def connection
       o(:connection) || (defined?(ActiveRecord::Base) ? ActiveRecord::Base.connection : nil)
     end
-    
+
     def logger
       o(:logger)
     end
@@ -176,19 +176,19 @@ class PgCsv
     def delimiter
       o(:delimiter) || ','
     end
-    
+
     def sql
       o(:sql)
     end
-    
+
     def temp_file
       o(:temp_file)
     end
-    
+
     def temp_dir
       o(:temp_dir) || '/tmp'
     end
-    
+
     def encoding
       o(:encoding)
     end

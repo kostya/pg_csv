@@ -21,7 +21,7 @@ class Raw
     end
     q
   end
-  
+
   def get_copy_data()
     @c += 1
     if @c < N
@@ -42,17 +42,17 @@ $con = Con.new
 class PgCsv
 
   module FixConnection
-    def connection    
+    def connection
       @con ||= Con.new
     end
-    
+
     def sql
       ""
     end
   end
-  
-  include FixConnection   
- 
+
+  include FixConnection
+
 end
 
 class Stre

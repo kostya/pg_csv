@@ -35,7 +35,7 @@ def with_file(name)
     yield data
     q = 2
   end
-  
+
   q.should == 2
 end
 

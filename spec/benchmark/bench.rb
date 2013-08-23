@@ -12,11 +12,11 @@ class PgCsv
   def sql
     ""
   end
-  
+
   def connection
     1
   end
-    
+
   def load_data
     n = o(:times).to_i
     c = 0
