@@ -1,7 +1,7 @@
 $:.push File.expand_path("../lib", __FILE__)
 
 # Maintain your gem's version:
-require "pg_csv_version"
+require "pg_csv/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
