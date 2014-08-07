@@ -98,31 +98,31 @@ class PgCsv
     def load_data
       info "#{query}"
       raw = connection.raw_connection
+      count = 0
 
       info "=> query"
-      q = raw.exec(query)
-      info "<= query"
+      raw.copy_data(query) do
+        info "<= query"
 
-      info "=> write data"
-      if columns_str
-        yield(@row_proc ? @row_proc[columns_str] : columns_str)
-      end
-
-      count = 0
-      if @row_proc
-        while row = raw.get_copy_data()
-          yield(@row_proc[row])
-          count += 1
+        info "=> write data"
+        if columns_str
+          yield(@row_proc ? @row_proc[columns_str] : columns_str)
         end
-      else
-        while row = raw.get_copy_data()
-          yield(row)
-          count += 1
-        end
-      end
-      info "<= write data"
 
-      q.clear
+        if @row_proc
+          while row = raw.get_copy_data()
+            yield(@row_proc[row])
+            count += 1
+          end
+        else
+          while row = raw.get_copy_data()
+            yield(row)
+            count += 1
+          end
+        end
+        info "<= write data"
+
+      end
       count
     end
 
