@@ -28,7 +28,7 @@ def tmp_dir
 end
 
 def with_file(name)
-  File.exists?(name).should be_true
+  File.exists?(name).should == true
   q = 1
   File.open(name) do |file|
     data = file.read
@@ -40,7 +40,7 @@ def with_file(name)
 end
 
 def with_gzfile(name)
-  File.exist?(name).should be_true
+  File.exist?(name).should == true
   q = 1
   Zlib::GzipReader.open(name) do |gz|
     data = gz.read

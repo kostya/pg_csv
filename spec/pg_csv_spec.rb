@@ -90,14 +90,14 @@ describe PgCsv do
 
   describe "using temp file" do
     it "at least file should return to target and set correct chmod" do
-      File.exists?(@name).should be_false
+      File.exists?(@name).should == false
       PgCsv.new(:sql => @sql, :temp_file => true, :temp_dir => tmp_dir).export(@name)
       with_file(@name){|d| d.should == "4,5,6\n1,2,3\n" }
       sprintf("%o", File.stat(@name).mode).to_i.should >= 100660
     end
 
     it "same with gzip" do
-      File.exists?(@name).should be_false
+      File.exists?(@name).should == false
       PgCsv.new(:sql => @sql, :temp_file => true, :temp_dir => tmp_dir, :type => :gzip).export(@name)
       with_gzfile(@name){|d| d.should == "4,5,6\n1,2,3\n" }
       sprintf("%o", File.stat(@name).mode).to_i.should >= 100660
@@ -106,7 +106,7 @@ describe PgCsv do
 
   describe "different types of export" do
     it "gzip export" do
-      File.exists?(@name).should be_false
+      File.exists?(@name).should == false
       PgCsv.new(:sql => @sql, :type => :gzip).export(@name)
       with_gzfile(@name){|d| d.should == "4,5,6\n1,2,3\n" }
       sprintf("%o", File.stat(@name).mode).to_i.should >= 100660
@@ -144,7 +144,7 @@ describe PgCsv do
 
   describe "integration specs" do
     it "1" do
-      File.exists?(@name).should be_false
+      File.exists?(@name).should == false
       PgCsv.new(:sql => @sql, :type => :gzip).export(@name, :delimiter => "|", :columns => %w{q w e}, :temp_file => true, :temp_dir => tmp_dir)
       with_gzfile(@name){|d| d.should == "q|w|e\n4|5|6\n1|2|3\n" }
     end
@@ -161,7 +161,7 @@ describe PgCsv do
     end
 
     it "gzip with empty content" do
-      File.exists?(@name).should be_false
+      File.exists?(@name).should == false
       PgCsv.new(:sql => "select a,b,c from tests where a = -1", :type => :gzip).export(@name, :temp_file => true, :temp_dir => tmp_dir)
       with_gzfile(@name){|d| d.should == "" }
     end
