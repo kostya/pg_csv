@@ -6,7 +6,7 @@ Fast AR/PostgreSQL csv export. Uses pg function 'copy to csv'. Effective on mill
 Gemfile:
 ``` ruby
 gem 'pg_csv'
-``` 
+```
 
 Usage:
 ``` ruby
@@ -59,6 +59,6 @@ end
 
 # yield example
 PgCsv.new(:sql => sql, :type => :yield).export do |row|
-  puts row  
+  puts row
 end
 ```
