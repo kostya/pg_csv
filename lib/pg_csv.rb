@@ -6,13 +6,13 @@ class PgCsv
   module Base
 
     def initialize(opts = {})
-      @options = opts.symbolize_keys
+      @options = opts
     end
 
     # do export :to - filename or stream
     def export(to = nil, opts = {}, &row_proc)
       @row_proc = row_proc
-      @local_options = opts.symbolize_keys
+      @local_options = opts
 
       raise ":connection should be" unless connection
       raise ":sql should be" unless sql
