@@ -105,14 +105,14 @@ describe PgCsv do
       File.exists?(@name).should == false
       PgCsv.new(:sql => @sql, :temp_file => true, :temp_dir => tmp_dir).export(@name)
       with_file(@name){|d| d.should == "4,5,6\n1,2,3\n" }
-      sprintf("%o", File.stat(@name).mode).to_i.should >= 100660
+      sprintf("%o", File.stat(@name).mode).to_i.should >= 100644
     end
 
     it "same with gzip" do
       File.exists?(@name).should == false
       PgCsv.new(:sql => @sql, :temp_file => true, :temp_dir => tmp_dir, :type => :gzip).export(@name)
       with_gzfile(@name){|d| d.should == "4,5,6\n1,2,3\n" }
-      sprintf("%o", File.stat(@name).mode).to_i.should >= 100660
+      sprintf("%o", File.stat(@name).mode).to_i.should >= 100644
     end
   end
 
@@ -121,7 +121,7 @@ describe PgCsv do
       File.exists?(@name).should == false
       PgCsv.new(:sql => @sql, :type => :gzip).export(@name)
       with_gzfile(@name){|d| d.should == "4,5,6\n1,2,3\n" }
-      sprintf("%o", File.stat(@name).mode).to_i.should >= 100660
+      sprintf("%o", File.stat(@name).mode).to_i.should >= 100644
     end
 
     it "plain export" do
@@ -141,7 +141,7 @@ describe PgCsv do
     it "file as default" do
       PgCsv.new(:sql => @sql, :type => :file).export(@name)
       with_file(@name){|d| d.should == "4,5,6\n1,2,3\n" }
-      sprintf("%o", File.stat(@name).mode).to_i.should >= 100660
+      sprintf("%o", File.stat(@name).mode).to_i.should >= 100644
     end
 
     it "yield export" do
