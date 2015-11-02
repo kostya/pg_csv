@@ -63,6 +63,18 @@ describe PgCsv do
       end
     end
 
+    describe "force_quote" do
+      it "force_quote" do
+        PgCsv.new(:sql => @sql).export(@name, :force_quote => true)
+        with_file(@name){|d| d.should == "\"4\",\"5\",\"6\"\n\"1\",\"2\",\"3\"\n"}
+      end
+
+      it "with headers" do
+        PgCsv.new(:sql => @sql).export(@name, :header => true, :force_quote => true)
+        with_file(@name){|d| d.should == "a,b,c\n\"4\",\"5\",\"6\"\n\"1\",\"2\",\"3\"\n"}
+      end
+    end
+
   end
 
   describe "moving options no matter" do

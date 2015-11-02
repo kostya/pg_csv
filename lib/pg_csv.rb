@@ -133,7 +133,7 @@ class PgCsv
   ) TO STDOUT
   WITH CSV
   DELIMITER '#{delimiter}'
-  #{use_pg_header? ? 'HEADER' : ''} #{encoding ? "ENCODING '#{encoding}'" : ''}
+  #{use_pg_header? ? 'HEADER' : ''} #{encoding ? "ENCODING '#{encoding}'" : ''} #{force_quote ? "FORCE QUOTE *" : ''}
       SQL
     end
 
@@ -192,6 +192,10 @@ class PgCsv
 
     def encoding
       o(:encoding)
+    end
+
+    def force_quote
+      o(:force_quote)
     end
   end
 

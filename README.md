@@ -17,22 +17,23 @@ PgCsv.new(opts).export(to, opts)
 
 Options:
 ``` ruby
-:sql        => "select p.* from users u, projects p where p.user_id = u.id order by email limit 10"
-:connection => AR.connection
-:delimiter  => ["\t", ",", ]
-:header     => boolean, use pg header for fields?
-:logger     => logger
-:columns    => array of column names, ignore :header option
-:encoding   => encoding (default is pg_default), list of encodings: http://www.postgresql.org/docs/8.4/static/multibyte.html#CHARSET-TABLE
+:sql         => "select p.* from users u, projects p where p.user_id = u.id order by email limit 10"
+:connection  => AR.connection
+:delimiter   => ["\t", ",", ]
+:header      => boolean, use pg header for fields?
+:logger      => logger
+:columns     => array of column names, ignore :header option
+:encoding    => encoding (default is pg_default), list of encodings: http://www.postgresql.org/docs/8.4/static/multibyte.html#CHARSET-TABLE
+:force_quote => boolean, force quotes around all non-NULL data?
 
-:temp_file  => boolean, generate throught temp file? final file appears by mv
-:temp_dir   => for :temp_file, ex: '/tmp'
+:temp_file   => boolean, generate throught temp file? final file appears by mv
+:temp_dir    => for :temp_file, ex: '/tmp'
 
-:type       => :plain - return full string
-            => :gzip  - save file to gzip
-            => :stream - save to stream
-            => :file - just save to file = default
-            => :yield - return each row to block
+:type        => :plain - return full string
+             => :gzip  - save file to gzip
+             => :stream - save to stream
+             => :file - just save to file = default
+             => :yield - return each row to block
 ```
 
 Examples:
