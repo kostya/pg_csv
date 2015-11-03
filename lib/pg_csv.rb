@@ -1,4 +1,4 @@
-require 'active_record'
+require 'pg'
 require File.expand_path(File.join(File.dirname(__FILE__), 'pg_csv/version'))
 
 class PgCsv
@@ -97,7 +97,7 @@ class PgCsv
 
     def load_data
       info "#{query}"
-      raw = connection.raw_connection
+      raw = connection.respond_to?(:raw_connection) ? connection.raw_connection : connection
       count = 0
 
       info "=> query"

@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'active_record'
 
 conn = {'adapter' => 'postgresql', 'database' => 'pgcsv_test', :encoding => "unicode"}
 ActiveRecord::Base.establish_connection conn
