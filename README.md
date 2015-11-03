@@ -1,7 +1,7 @@
 PgCsv
 =====
 
-Fast AR/PostgreSQL csv export. Uses pg function 'copy to csv'. Effective on millions rows.
+Fast Ruby PG csv export. Uses pg function 'copy to csv'. Effective on millions rows.
 
 Gemfile:
 ``` ruby
@@ -17,8 +17,8 @@ PgCsv.new(opts).export(to, opts)
 
 Options:
 ``` ruby
-:sql         => "select p.* from users u, projects p where p.user_id = u.id order by email limit 10"
-:connection  => AR.connection
+:sql         => plain sql ("select id, name from users")
+:connection  => ActiveRecord::Base.connection or PG::Connection(gem pg)
 :delimiter   => ["\t", ",", ]
 :header      => boolean, use pg header for fields?
 :logger      => logger
@@ -38,7 +38,7 @@ Options:
 
 Examples:
 ``` ruby
-PgCsv.new(:sql => User.good.to_sql).export('a1.csv')
+PgCsv.new(:sql => sql).export('a1.csv')
 PgCsv.new(:sql => sql).export('a2.gz', :type => :gzip)
 PgCsv.new(:sql => sql).export('a3.csv', :temp_file => true)
 PgCsv.new(:sql => sql, :type => :plain).export
