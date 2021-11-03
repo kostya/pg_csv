@@ -38,28 +38,28 @@ Options:
 
 Examples:
 ``` ruby
-PgCsv.new(:sql => sql).export('a1.csv')
-PgCsv.new(:sql => sql).export('a2.gz', :type => :gzip)
-PgCsv.new(:sql => sql).export('a3.csv', :temp_file => true)
-PgCsv.new(:sql => sql, :type => :plain).export
-File.open("a4.csv", 'a'){|f| PgCsv.new(:sql => "select * from users").\
-    export(f, :type => :stream) }
-PgCsv.new(:sql => sql).export('a5.csv', :delimiter => "\t")
-PgCsv.new(:sql => sql).export('a6.csv', :header => true)
-PgCsv.new(:sql => sql).export('a7.csv', :columns => %w{id a b c})
-PgCsv.new(:sql => sql, :connection => SomeDb.connection, :columns => %w{id a b c}, :delimiter => "|").\
-    export('a8.gz', :type => :gzip, :temp_file => true)
+PgCsv.new(sql: sql).export('a1.csv')
+PgCsv.new(sql: sql).export('a2.gz', type: :gzip)
+PgCsv.new(sql: sql).export('a3.csv', temp_file: true)
+PgCsv.new(sql: sql, type: :plain).export
+File.open("a4.csv", 'a'){ |f| PgCsv.new(sql: "select * from users").\
+    export(f, type: :stream) }
+PgCsv.new(sql: sql).export('a5.csv', delimiter: "\t")
+PgCsv.new(sql: sql).export('a6.csv', header: true)
+PgCsv.new(sql: sql).export('a7.csv', columns: %w(id a b c))
+PgCsv.new(sql: sql, connection: SomeDb.connection, columns: %w(id a b c), delimiter: "|").\
+    export('a8.gz', type: :gzip, temp_file: true)
 
 # example collect from shards
 Zlib::GzipWriter.open('some.gz') do |stream|
-  e = PgCsv.new(:sql => sql, :type => :stream)
+  e = PgCsv.new(sql: sql, type: :stream)
   ConnectionPool.each_shard do |connection|
-    e.export(stream, :connection => connection)
+    e.export(stream, connection: connection)
   end
 end
 
 # yield example
-PgCsv.new(:sql => sql, :type => :yield).export do |row|
+PgCsv.new(sql: sql, type: :yield).export do |row|
   puts row
 end
 ```

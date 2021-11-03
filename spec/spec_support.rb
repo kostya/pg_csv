@@ -1,7 +1,11 @@
 require 'fileutils'
 require 'active_record'
 
-conn = {'adapter' => 'postgresql', 'database' => 'pgcsv_test', :encoding => "unicode"}
+conn = {
+  adapter: 'postgresql',
+  database: 'pgcsv_test',
+  encoding: "unicode"
+}
 ActiveRecord::Base.establish_connection conn
 
 class Test < ActiveRecord::Base
@@ -29,7 +33,7 @@ def tmp_dir
 end
 
 def with_file(name)
-  File.exists?(name).should == true
+  expect(File).to exist(name)
   q = 1
   File.open(name) do |file|
     data = file.read
@@ -37,16 +41,17 @@ def with_file(name)
     q = 2
   end
 
-  q.should == 2
+  expect(q).to eq(2)
 end
 
 def with_gzfile(name)
-  File.exist?(name).should == true
+  expect(File).to exist(name)
   q = 1
   Zlib::GzipReader.open(name) do |gz|
     data = gz.read
     yield data
     q = 2
   end
-  q.should == 2
+
+  expect(q).to eq(2)
 end
